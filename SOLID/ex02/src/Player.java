@@ -1,5 +1,6 @@
 public class Player {
     private Frame last;
+    
     void play(byte[] fileBytes){
         // decode
         Frame f = new Frame(fileBytes); // pretend decoding
