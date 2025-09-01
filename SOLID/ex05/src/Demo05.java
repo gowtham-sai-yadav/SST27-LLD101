@@ -1,7 +1,9 @@
 
 public class Demo05 {
-    static int areaAfterResize(Rectangle r){
-        r.setWidth(5); r.setHeight(4); return r.area();
+    static int areaAfterResize(Shape shape) {
+        shape.setWidth(5);
+        shape.setHeight(4);
+        return shape.getArea();
     }
     
     public static void main(String[] args) {
