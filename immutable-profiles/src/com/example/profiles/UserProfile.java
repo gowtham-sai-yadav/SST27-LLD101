@@ -1,39 +1,31 @@
 package com.example.profiles;
 
+import static com.example.profiles.Validation.requireEmail;
+import static com.example.profiles.Validation.requireNonBlank;
+
 /**
- * Mutable and confusing. Multiple constructors + setters.
+ * Immutable UserProfile with Builder and centralized validation.
  */
-public class UserProfile {
-    private String id;
-    private String email;
-    private String phone;
-    private String displayName;
-    private String address;
-    private boolean marketingOptIn;
-    private String twitter;
-    private String github;
+public final class UserProfile {
+    private final String id;
+    private final String email;
+    private final String phone;
+    private final String displayName;
+    private final String address;
+    private final boolean marketingOptIn;
+    private final String twitter;
+    private final String github;
 
-    public UserProfile() { }
-
-    public UserProfile(String id, String email) {
-        this.id = id;
-        this.email = email;
+    private UserProfile(Builder builder) {
+        this.id = builder.id;
+        this.email = builder.email;
+        this.phone = builder.phone;
+        this.displayName = builder.displayName;
+        this.address = builder.address;
+        this.marketingOptIn = builder.marketingOptIn;
+        this.twitter = builder.twitter;
+        this.github = builder.github;
     }
-
-    public UserProfile(String id, String email, String phone) {
-        this(id, email);
-        this.phone = phone;
-    }
-
-    // many setters — mutability leaks
-    public void setId(String id) { this.id = id; }
-    public void setEmail(String email) { this.email = email; }
-    public void setPhone(String phone) { this.phone = phone; }
-    public void setDisplayName(String displayName) { this.displayName = displayName; }
-    public void setAddress(String address) { this.address = address; }
-    public void setMarketingOptIn(boolean marketingOptIn) { this.marketingOptIn = marketingOptIn; }
-    public void setTwitter(String twitter) { this.twitter = twitter; }
-    public void setGithub(String github) { this.github = github; }
 
     // getters
     public String getId() { return id; }
@@ -44,4 +36,71 @@ public class UserProfile {
     public boolean isMarketingOptIn() { return marketingOptIn; }
     public String getTwitter() { return twitter; }
     public String getGithub() { return github; }
+
+    public static final class Builder {
+        private final String id;
+        private final String email;
+        private String phone;
+        private String displayName;
+        private String address;
+        private boolean marketingOptIn;
+        private String twitter;
+        private String github;
+
+        public Builder(String id, String email) {
+            this.id = id;
+            this.email = email;
+        }
+
+        public Builder phone(String phone) {
+            this.phone = phone;
+            return this;
+        }
+
+        public Builder displayName(String displayName) {
+            this.displayName = displayName;
+            return this;
+        }
+
+        public Builder address(String address) {
+            this.address = address;
+            return this;
+        }
+
+        public Builder marketingOptIn(boolean marketingOptIn) {
+            this.marketingOptIn = marketingOptIn;
+            return this;
+        }
+
+        public Builder twitter(String twitter) {
+            this.twitter = twitter;
+            return this;
+        }
+
+        public Builder github(String github) {
+            this.github = github;
+            return this;
+        }
+
+        public UserProfile build() {
+            requireNonBlank(id, "id");
+            requireEmail(email);
+            return new UserProfile(this);
+        }
+    }
+
+    public static Builder builder(String id, String email) {
+        return new Builder(id, email);
+    }
+
+    public Builder toBuilder() {
+        Builder b = new Builder(this.id, this.email);
+        b.phone(this.phone)
+         .displayName(this.displayName)
+         .address(this.address)
+         .marketingOptIn(this.marketingOptIn)
+         .twitter(this.twitter)
+         .github(this.github);
+        return b;
+    }
 }
